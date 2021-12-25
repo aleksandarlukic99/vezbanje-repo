@@ -67,7 +67,7 @@ class HomeViewController: UIViewController {
                 likes: []))
         }
         for _ in 0..<5 {
-            let user = User(username: "Joe",
+            let user = User(username: "kayne_west",
                             name: (first: "", last: ""),
                             bio: "",
                             birthDate: Date(),
@@ -160,6 +160,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             switch headerModel.renderType {
             case .header(let header):
                 let cell = tableView.dequeueReusableCell(withIdentifier: IGFeedPostHeaderTableViewCell.identifier, for: indexPath) as! IGFeedPostHeaderTableViewCell
+                cell.configure(with: header)
+                cell.delegate = self
                 return cell
             case .actions, .primaryContent, .comments:
                 return UITableViewCell()
@@ -170,6 +172,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             switch postModel.renderType {
             case .primaryContent(let post):
                 let cell = tableView.dequeueReusableCell(withIdentifier: IGFeedPostTableViewCell.identifier, for: indexPath) as! IGFeedPostTableViewCell
+                cell.configure(with: post)
                 return cell
             case .comments, .actions, .header:
                 return UITableViewCell()
@@ -180,6 +183,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             switch actionModel.renderType {
             case .actions(let actions):
                 let cell = tableView.dequeueReusableCell(withIdentifier: IGFeedPostActionsTableViewCell.identifier, for: indexPath) as! IGFeedPostActionsTableViewCell
+                cell.delegate = self
                 return cell
             case .header, .comments, .primaryContent:
                 return UITableViewCell()
@@ -223,6 +227,40 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
+    }
+    
+}
+
+extension HomeViewController: IGFeedPostHeaderTableViewCellDelegate {
+    
+    func didTapMoreButton() {
+        let actionSheet = UIAlertController(title: "Post options", message: nil, preferredStyle: .actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Report Post", style: .destructive, handler: { [weak self]_ in
+            self?.reportPost()
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func reportPost() {
+        
+    }
+    
+}
+
+extension HomeViewController: IGFeedPostActionsTableViewCellDelegate {
+    
+    func didTapLikeButton() {
+        print("like")
+    }
+    
+    func didTapCommentButton() {
+        print("Comment")
+    }
+    
+    func didTapSendButton() {
+        print("send")
     }
     
 }
